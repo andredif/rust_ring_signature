@@ -7,3 +7,4 @@ pub mod member;
 pub mod signature;
 pub mod tests_helper;
 mod transcript;
+pub mod validation;

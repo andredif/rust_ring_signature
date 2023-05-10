@@ -7,6 +7,7 @@ use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
 use sha2::Sha512;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct Signature {
@@ -14,6 +15,7 @@ pub struct Signature {
     pub responses: Vec<Scalar>,
     pub key_images: Vec<CompressedRistretto>,
 }
+
 
 pub enum Error {
     // This error occurs if the signature contains an amount of public keys
@@ -173,6 +175,7 @@ impl Signature {
         }
         bytes
     }
+
 }
 
 

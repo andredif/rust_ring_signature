@@ -11,18 +11,7 @@ use curve25519_dalek::scalar::Scalar;
 use serde::{Deserialize, Serialize};
 use serde_with;
 use bincode::{deserialize, serialize};
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Validation{
-    msg : [u8;6],
-    pub_keys : Vec<Vec<CompressedRistretto>>,
-    challenge : Scalar,
-    responses: Vec<Scalar>,
-    key_images:Vec<CompressedRistretto>
-}
-
-
-
+use clsag::validation::{Validation, json_to_validation, validation_to_json};
 
 fn main() {
     // Define setup parameters
@@ -34,7 +23,7 @@ fn main() {
     //Signers collection
     let mut all_signers: Vec<Member> = Vec::new();
 
-    
+
     //Generate all the signers
 
     for _ in 0..num_voters {
@@ -62,7 +51,7 @@ fn main() {
                     }
                 }
             }
-            
+
             let start_signing = Instant::now();
             let signature = clsag.sign(msg).unwrap();
             let duration_signing = start_signing.elapsed();
@@ -131,3 +120,19 @@ fn main() {
         }
     }
 }
+// fn main() {
+//     let validation = Validation {
+//         msg: [0u8; 6],
+//         pub_keys: vec![vec![CompressedRistretto([0u8; 32])]],
+//         challenge: Scalar::zero(),
+//         responses: vec![Scalar::zero()],
+//         key_images: vec![CompressedRistretto([0u8; 32])]
+//     };
+//     println!("Validation {:?}", validation);
+
+//     let json_val_str = validation_to_json(validation.clone()).unwrap();
+//     println!("JSON string: {}", json_val_str);
+
+//     let validation_deserialized = json_to_validation(&json_val_str).unwrap();
+//     assert_eq!(validation, validation_deserialized);
+// }

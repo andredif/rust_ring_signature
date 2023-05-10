@@ -2,7 +2,6 @@ use crate::member::Member;
 use crate::signature::Signature;
 use curve25519_dalek::ristretto::CompressedRistretto;
 use curve25519_dalek::scalar::Scalar;
-
 use crate::transcript::TranscriptProtocol;
 use merlin::Transcript;
 
