@@ -24,7 +24,7 @@ pub struct JSONValidation {
     pub key_images: String,
 }
 
-pub fn validation_to_json(validation: Validation) -> Result<String, serde_json::Error> {
+pub fn validation_to_json(validation: Validation) -> JSONValidation {
     let msg = String::from_utf8_lossy(&validation.msg[..]).to_string();
     let pub_keys = serialize(&validation.pub_keys).map(|v| base64::encode(v)).unwrap_or_default();
     let challenge = base64::encode(serialize(&validation.challenge).unwrap_or_default());
@@ -32,10 +32,16 @@ pub fn validation_to_json(validation: Validation) -> Result<String, serde_json::
     let key_images = serialize(&validation.key_images).map(|v| base64::encode(v)).unwrap_or_default();
 
     let json_val = JSONValidation {msg, pub_keys, challenge, responses, key_images};
+    json_val
+
+}
+
+pub fn validation_to_string(validation: Validation) -> Result<String, serde_json::Error> {
+    let mut json_val = validation_to_json(validation);
     serde_json::to_string(&json_val)
 }
 
-pub fn json_to_validation(json_str: &str) -> Result<Validation, serde_json::Error> {
+pub fn str_to_validation(json_str: &str) -> Result<Validation, serde_json::Error> {
     let json_val: JSONValidation = serde_json::from_str(json_str)?;
 
     let msg = json_val.msg.as_bytes().try_into().unwrap();

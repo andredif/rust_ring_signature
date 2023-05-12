@@ -6,12 +6,7 @@ use clsag::member::{Member, generate_signer};
 use clsag::clsag::Clsag;
 use clsag::signature::Signature;
 use clsag::{tests_helper::*, signature};
-use curve25519_dalek::ristretto::CompressedRistretto;
-use curve25519_dalek::scalar::Scalar;
-use serde::{Deserialize, Serialize};
-use serde_with;
-use bincode::{deserialize, serialize};
-use clsag::validation::{Validation, json_to_validation, validation_to_json};
+use clsag::validation::{Validation, str_to_validation, validation_to_json, validation_to_string};
 
 fn main() {
     // Define setup parameters
@@ -59,60 +54,30 @@ fn main() {
             println!("{:#?}", signer.hashed_pubkey_basepoint);
             println!("{:#?}", signature.key_images);
             println!("challenges\n{:?}", signature.challenge);
-            // let json_signature = Validation{
-            //     pub_keys : clsag.public_keys(),
-            //     key_images : signature.key_images,
-            //     challenge : signature.challenge,
-            //     responses : signature.responses,
-            //     msg : *msg
 
-            // };
+            let json_signature = Validation{
+                pub_keys : clsag.public_keys(),
+                key_images : signature.key_images,
+                challenge : signature.challenge,
+                responses : signature.responses,
+                msg : *msg
 
-            let json_pub_keys = clsag.public_keys();
-            let json_key_images = signature.key_images;
-            let json_challenge = signature.challenge;
-            let json_responses = signature.responses;
-            let json_msg = *msg;
-
-            // };
-
-
-
-            // let mut json_path = String::from("../data.json");
-            // json_path.insert_str(7, &jack.to_string());
-            let serialized_pub_keys = serialize(&json_pub_keys).unwrap();
-            println!("serialized_pub_keys = {:?}", serialized_pub_keys);
-            let serialized_key_images = serialize(&json_key_images).unwrap();
-            // println!("serialized_key_images = {:?}", serialized_key_images);
-            let serialized_challenge = serialize(&json_challenge).unwrap();
-            // println!("serialized_challenge = {:?}", serialized_challenge);
-            let serialized_responses = serialize(&json_responses).unwrap();
-            // println!("serialized_responses = {:?}", serialized_responses);
-            let serialized_msg = serialize(&json_msg).unwrap();
-            // println!("serialized_msg = {:?}", serialized_msg);
-            // std::fs::write(json_path, serde_json::to_string(&json).expect("error"));
-
-
-            // let mut data_received = std::fs::read_to_string(json_path).expect("error");
-            // println!("{:?}", data_received);
-            let mut deserialized_pub_keys : Vec<Vec<CompressedRistretto>> = deserialize::<Vec<Vec<CompressedRistretto>>>(&serialized_pub_keys).unwrap();
-            println!("{:?}", deserialized_pub_keys);
-            let mut deserialized_key_images : Vec<CompressedRistretto> = deserialize::<Vec<CompressedRistretto>>(&serialized_key_images).unwrap();
-            println!("{:?}", deserialized_key_images);
-            let mut deserialized_challenge : Scalar = deserialize::<Scalar>(&serialized_challenge).unwrap();
-            println!("{:?}", deserialized_challenge);
-            let mut deserialized_responses : Vec<Scalar> = deserialize::<Vec<Scalar>>(&serialized_responses).unwrap();
-            println!("{:?}", deserialized_responses);
-            let mut deserialized_msg : [u8;6] = deserialize::<[u8;6]>(&serialized_msg).unwrap();
-            println!("{:?}", deserialized_msg);
-            let verify_signature = Signature{
-                challenge: deserialized_challenge,
-                responses: deserialized_responses,
-                key_images: deserialized_key_images
             };
-            let msg = deserialized_msg;
+
+            let json_val_str = validation_to_string(json_signature.clone()).unwrap();
+            println!("JSON string: {}", json_val_str);
+
+            let mut validation_deserialized = str_to_validation(&json_val_str).unwrap();
+            assert_eq!(json_signature, validation_deserialized);
+
+            let verify_signature = Signature{
+                challenge: validation_deserialized.challenge,
+                responses: validation_deserialized.responses,
+                key_images: validation_deserialized.key_images
+            };
+            let msg = validation_deserialized.msg;
             let start_verifying = Instant::now();
-            let res = verify_signature.verify(&mut deserialized_pub_keys, &msg);
+            let res = verify_signature.verify(&mut validation_deserialized.pub_keys, &msg);
             let duration_verifying = start_verifying.elapsed();
             println!("Verifying signature took {:?} seconds", duration_verifying);
 
