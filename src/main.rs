@@ -6,7 +6,7 @@ use clsag::member::{Member, generate_signer};
 use clsag::clsag::Clsag;
 use clsag::signature::Signature;
 use clsag::{tests_helper::*, signature};
-use clsag::validation::{Validation, str_to_validation, validation_to_json, validation_to_string};
+use clsag::validation;
 
 fn main() {
     // Define setup parameters
@@ -18,16 +18,27 @@ fn main() {
     //Signers collection
     let mut all_signers: Vec<Member> = Vec::new();
 
+    let mut all_voters: Vec<validation::Voter> = Vec::new();
+
 
     //Generate all the signers
 
-    for _ in 0..num_voters {
+    for i in 1..=num_voters {
         let start_generating = Instant::now();
         let signer = generate_signer(num_keys);
+        let identifier = format!("Voter-{}", i);
+        let pubkeys = signer.public_set.to_keys();
+        let voter = validation::Voter {identifier: identifier, pub_keys: pubkeys};
         all_signers.push(signer);
+        all_voters.push(voter);
         let duration_generating = start_generating.elapsed();
         println!("Key pair generation took {:?} seconds", duration_generating);
     }
+    println!("Inital voters are: {:?}", all_voters);
+    let json_voters = validation::all_voters_to_string(all_voters);
+
+    let reloaded_voters = validation::str_to_all_voters(&json_voters);
+    println!("Reloaded voters are: {:?}", reloaded_voters);
 
     for jack in 0..5 {
         for signer in all_signers.iter() {
