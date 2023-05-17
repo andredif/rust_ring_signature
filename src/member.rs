@@ -81,6 +81,11 @@ impl Member {
             response: None,
         }
     }
+
+    pub fn new_decoy_from_compressed_ristretto(compressed_keys: Vec<CompressedRistretto>) -> Self {
+        let public_keys = compressed_keys.iter().map(|v| v.decompress().unwrap()).collect();
+        Self::new_decoy(public_keys)
+    }
     // Creates a member who will be a decoy in the ring
     pub fn new_decoy(public_keys: Vec<RistrettoPoint>) -> Self {
         let response = generate_rand_scalar();
