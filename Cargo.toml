@@ -5,7 +5,7 @@ authors = ["Andrea Di Franco <difranco.developer@gmail.com"]
 description = "Compact Linkable Spontaneous Anonymous Group ring signature for Rust"
 license = "BSD-3-Clause"
 repository = "https://github.com/andredif/rust_ring_signature"
-edition = "2023"
+edition = "2018"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

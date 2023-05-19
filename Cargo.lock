@@ -130,21 +130,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "clsag"
-version = "0.3.0"
-dependencies = [
- "base64",
- "bincode",
- "curve25519-dalek",
- "merlin",
- "rand",
- "serde",
- "serde_json",
- "serde_with",
- "sha2",
-]
-
-[[package]]
 name = "codespan-reporting"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -561,6 +546,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "678054eb77286b51581ba43620cc911abf02758c91f93f479767aed0f90458b2"
 dependencies = [
  "rand_core 0.3.1",
+]
+
+[[package]]
+name = "rust_ring_signature"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "bincode",
+ "curve25519-dalek",
+ "merlin",
+ "rand",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "sha2",
 ]
 
 [[package]]
