@@ -78,7 +78,7 @@ pub fn str_to_all_voters(json_str: &str) -> Result<Vec<Voter>, serde_json::Error
     let json_values: Vec<JSONVoter> = serde_json::from_str(json_str)?;
     let mut voters: Vec<Voter> = Vec::new();
     for json_val in json_values {
-        let pub_keys = deserialize(&base64::decode(&json_val.pub_keys).unwrap_or_default()).unwrap_or_default();
+        let pub_keys = string_to_pub_keys(json_val.pub_keys);
         let identifier = json_val.identifier;
         let voter = Voter {identifier: identifier, pub_keys: pub_keys};
         voters.push(voter);
@@ -100,8 +100,12 @@ pub fn str_to_vote(json_str: &str) -> Result<Vote, serde_json::Error> {
 
 pub fn str_to_voter(json_str: &str) -> Result<Voter, serde_json::Error> {
     let json_val: JSONVoter = serde_json::from_str(json_str)?;
-    let pub_keys = deserialize(&base64::decode(&json_val.pub_keys).unwrap_or_default()).unwrap_or_default();
+    let pub_keys = string_to_pub_keys(json_val.pub_keys);
     let identifier = json_val.identifier;
 
     Ok(Voter {identifier: identifier, pub_keys: pub_keys})
+}
+
+pub fn string_to_pub_keys(pubkeys: String) -> Vec<CompressedRistretto> {
+    deserialize(&base64::decode(&pubkeys).unwrap_or_default()).unwrap_or_default()
 }
