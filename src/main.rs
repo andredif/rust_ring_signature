@@ -11,7 +11,7 @@ use clsag::validation;
 fn main() {
     // Define setup parameters
     let num_keys = 1;
-    let num_voters = 5;
+    let num_voters = 150;
     let msg = b"Bit4Id";
 
 
@@ -49,6 +49,7 @@ fn main() {
         let duration_generating = start_generating.elapsed();
         println!("Key pair generation took {:?} seconds", duration_generating);
     }
+
 
     let all_voters_string = validation::all_voters_to_string(all_voters).unwrap();
 

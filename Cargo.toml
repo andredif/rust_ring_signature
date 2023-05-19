@@ -1,11 +1,11 @@
 [package]
-name = "clsag"
-version = "0.3.0"
-authors = ["Kevaundray Wedderburn <kevtheappdev@gmail.com"]
-description = "Compact Linkable Spontaneous Anonymous Group construction"
+name = "rust_ring_signature"
+version = "0.1.0"
+authors = ["Andrea Di Franco <difranco.developer@gmail.com"]
+description = "Compact Linkable Spontaneous Anonymous Group ring signature for Rust"
 license = "BSD-3-Clause"
-repository = "https://github.com/crate-crypto/CLSAG"
-edition = "2018"
+repository = "https://github.com/andredif/rust_ring_signature"
+edition = "2023"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
