@@ -10,7 +10,7 @@ use rust_ring_signature::validation;
 fn main() {
     // Define setup parameters
     let num_keys = 1;
-    let num_voters = 150;
+    let num_voters = 5;
     let msg = b"Bit4Id";
 
 
@@ -51,6 +51,7 @@ fn main() {
 
 
     let all_voters_string = validation::all_voters_to_string(all_voters).unwrap();
+    println!("Voters are: {:?}", all_voters_string);
 
     let all_voters_reloaded = validation::str_to_all_voters(&all_voters_string).unwrap();
     // println!("Inital voters are: {:?}", all_voters);

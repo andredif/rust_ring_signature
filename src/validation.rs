@@ -41,7 +41,7 @@ pub struct Poll {
 }
 
 pub fn voter_to_json(voter: Voter) -> Result<JSONVoter, serde_json::Error> {
-    let pub_keys = serialize(&voter.pub_keys).map(|v| base64::encode(v)).unwrap_or_default();
+    let pub_keys = pub_keys_to_string(voter.pub_keys).unwrap();
     let identifier = voter.identifier;
     Ok(JSONVoter { identifier: identifier, pub_keys: pub_keys })
 }
@@ -65,6 +65,7 @@ pub fn voter_to_string(voter: Voter) -> Result<String, serde_json::Error> {
     serde_json::to_string(&json_val)
 }
 
+
 pub fn all_voters_to_string(voters: Vec<Voter>) -> Result<String, serde_json::Error> {
     let mut json_voters: Vec<JSONVoter> = Vec::new();
     for voter in voters {
@@ -78,7 +79,7 @@ pub fn str_to_all_voters(json_str: &str) -> Result<Vec<Voter>, serde_json::Error
     let json_values: Vec<JSONVoter> = serde_json::from_str(json_str)?;
     let mut voters: Vec<Voter> = Vec::new();
     for json_val in json_values {
-        let pub_keys = string_to_pub_keys(json_val.pub_keys);
+        let pub_keys = string_to_pub_keys(json_val.pub_keys).unwrap();
         let identifier = json_val.identifier;
         let voter = Voter {identifier: identifier, pub_keys: pub_keys};
         voters.push(voter);
@@ -100,12 +101,16 @@ pub fn str_to_vote(json_str: &str) -> Result<Vote, serde_json::Error> {
 
 pub fn str_to_voter(json_str: &str) -> Result<Voter, serde_json::Error> {
     let json_val: JSONVoter = serde_json::from_str(json_str)?;
-    let pub_keys = string_to_pub_keys(json_val.pub_keys);
+    let pub_keys = string_to_pub_keys(json_val.pub_keys).unwrap();
     let identifier = json_val.identifier;
 
     Ok(Voter {identifier: identifier, pub_keys: pub_keys})
 }
 
-pub fn string_to_pub_keys(pubkeys: String) -> Vec<CompressedRistretto> {
-    deserialize(&base64::decode(&pubkeys).unwrap_or_default()).unwrap_or_default()
+pub fn string_to_pub_keys(pubkeys: String) -> Result<Vec<CompressedRistretto>, serde_json::Error> {
+    Ok(deserialize(&base64::decode(&pubkeys).unwrap_or_default()).unwrap_or_default())
+}
+
+pub fn pub_keys_to_string(pub_keys: Vec<CompressedRistretto>) -> Result<String, serde_json::Error> {
+    Ok(serialize(&pub_keys).map(|v| base64::encode(v)).unwrap_or_default())
 }
