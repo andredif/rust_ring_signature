@@ -1,10 +1,8 @@
 extern crate curve25519_dalek;
-use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
-use std::time::{Duration, Instant};
+use std::time::{Instant};
 use rust_ring_signature::member::{Member, generate_signer};
 use rust_ring_signature::clsag::Clsag;
 use rust_ring_signature::signature::Signature;
-use rust_ring_signature::{tests_helper::*, signature};
 use rust_ring_signature::validation;
 
 fn main() {

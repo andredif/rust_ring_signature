@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use bincode::{serialize, deserialize};
-use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
+use curve25519_dalek::ristretto::{CompressedRistretto};
 use curve25519_dalek::scalar::Scalar;
 use std::convert::TryInto;
 use base64;

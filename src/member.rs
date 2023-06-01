@@ -1,5 +1,3 @@
-use std::hash;
-
 use crate::constants::BASEPOINT;
 use crate::keys::{PrivateSet, PublicSet};
 use crate::transcript::TranscriptProtocol;
@@ -7,7 +5,6 @@ use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
-use rand;
 
 #[derive(Debug)]
 pub enum Error {
@@ -48,11 +45,12 @@ pub fn generate_signer(num_keys: usize) -> Member {
 
 
 pub fn generate_rand_scalars(num: usize) -> Vec<Scalar> {
-    let mut rng = rand::thread_rng();
+    use rand_core::OsRng;
+    let mut csprng: OsRng = OsRng;
     let mut scalars = Vec::<Scalar>::with_capacity(num);
 
     for _ in 0..num {
-        scalars.push(Scalar::random(&mut rng));
+        scalars.push(Scalar::random(&mut csprng));
     }
     scalars
 }
@@ -294,8 +292,9 @@ pub fn compute_challenge_ring(
 }
 
 fn generate_rand_scalar() -> Scalar {
-    let mut rng = rand::thread_rng();
-    Scalar::random(&mut rng)
+    use rand_core::OsRng;
+    let mut csprng: OsRng = OsRng;
+    Scalar::random(&mut csprng)
 }
 
 // #[cfg(test)]

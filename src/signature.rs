@@ -7,7 +7,6 @@ use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
 use sha2::Sha512;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct Signature {
