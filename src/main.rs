@@ -9,7 +9,7 @@ fn main() {
     // Define setup parameters
     let num_keys = 1;
     let num_voters = 5;
-    let msg = b"Bit4Id";
+    let msg = "Let's go Warriors";
 
 
     //Signers collection
@@ -93,7 +93,6 @@ fn main() {
                     }
                 }
             }
-
             let start_signing = Instant::now();
             let signature = clsag.sign(msg).unwrap();
             let duration_signing = start_signing.elapsed();
@@ -107,12 +106,11 @@ fn main() {
             // println!("{:#?}", signer.hashed_pubkey_basepoint);
             // println!("{:#?}", signature.key_images);
             // println!("challenges\n{:?}", signature.challenge);
-
             let json_signature = validation::Vote{
                 key_images : signature.key_images,
                 challenge : signature.challenge,
                 responses : signature.responses,
-                msg : *msg
+                msg : msg.to_string()
 
             };
 
@@ -120,7 +118,7 @@ fn main() {
                 key_images : reloaded_signature.key_images,
                 challenge : reloaded_signature.challenge,
                 responses : reloaded_signature.responses,
-                msg : *msg
+                msg : msg.to_string()
 
             };
 
@@ -141,32 +139,30 @@ fn main() {
                 responses: validation_deserialized.responses,
                 key_images: validation_deserialized.key_images
             };
-            let msg = validation_deserialized.msg;
 
             let reloaded_verify_signature = Signature{
                 challenge: reloaded_validation_deserialized.challenge,
                 responses: reloaded_validation_deserialized.responses,
                 key_images: reloaded_validation_deserialized.key_images
             };
-            let msg = reloaded_validation_deserialized.msg;
 
             let start_verifying = Instant::now();
-            let first_res = verify_signature.verify(&mut clsag.public_keys(), &msg);
+            let first_res = verify_signature.verify(&mut clsag.public_keys(), msg);
             let duration_verifying = start_verifying.elapsed();
             println!("Verifying signature took {:?} seconds", duration_verifying);
 
             let start_verifying = Instant::now();
-            let second_res = verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg);
+            let second_res = verify_signature.verify(&mut reloaded_clsag.public_keys(), msg);
             let duration_verifying = start_verifying.elapsed();
             println!("Verifying signature took {:?} seconds", duration_verifying);
 
             let start_verifying = Instant::now();
-            let third_res = reloaded_verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg);
+            let third_res = reloaded_verify_signature.verify(&mut reloaded_clsag.public_keys(), msg);
             let duration_verifying = start_verifying.elapsed();
             println!("Verifying signature took {:?} seconds", duration_verifying);
 
             let start_verifying = Instant::now();
-            let fourth_res = reloaded_verify_signature.verify(&mut clsag.public_keys(), &msg);
+            let fourth_res = reloaded_verify_signature.verify(&mut clsag.public_keys(), msg);
             let duration_verifying = start_verifying.elapsed();
             println!("Verifying signature took {:?} seconds", duration_verifying);
 

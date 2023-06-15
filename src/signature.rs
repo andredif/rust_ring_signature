@@ -38,13 +38,13 @@ impl From<crate::member::Error> for Error {
 }
 
 impl Signature {
-    pub fn verify(
+    pub fn verify<T: AsRef<[u8]>>(
         &self,
         public_keys: &mut Vec<Vec<CompressedRistretto>>,
-        msg: &[u8],
+        original_msg: T,
     ) -> Result<(), Error> {
         // Skip subgroup check as ristretto points have co-factor 1.
-
+        let msg: &[u8] = original_msg.as_ref();
         let num_responses = self.responses.len();
         let num_pubkey_sets = public_keys.len();
 

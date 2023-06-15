@@ -69,9 +69,9 @@ impl Clsag {
             .collect()
     }
     // sign produces a clsag signature
-    pub fn sign(&self, msg: &[u8]) -> Result<Signature, Error> {
+    pub fn sign<T: AsRef<[u8]>>(&self, original_msg: T) -> Result<Signature, Error> {
         self.check_format()?;
-
+        let msg: &[u8] = original_msg.as_ref();
         let num_members = self.members.len();
         let mut all_challenges: Vec<Scalar> = Vec::with_capacity(num_members);
 

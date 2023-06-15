@@ -7,7 +7,7 @@ use base64;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct Vote {
-    pub msg: [u8; 6],
+    pub msg: String,
     pub challenge: Scalar,
     pub responses: Vec<Scalar>,
     pub key_images: Vec<CompressedRistretto>
@@ -46,12 +46,17 @@ pub fn voter_to_json(voter: Voter) -> Result<JSONVoter, serde_json::Error> {
 }
 
 pub fn vote_to_json(vote: Vote) -> Result<JSONVote, serde_json::Error> {
-    let msg = String::from_utf8_lossy(&vote.msg[..]).to_string();
+    let this_msg = vote.msg.clone();
     let challenge = base64::encode(serialize(&vote.challenge).unwrap_or_default());
     let responses = serialize(&vote.responses).map(|v| base64::encode(v)).unwrap_or_default();
     let key_images = serialize(&vote.key_images).map(|v| base64::encode(v)).unwrap_or_default();
 
-    Ok(JSONVote {msg, challenge, responses, key_images})
+    Ok(JSONVote {
+        msg:this_msg,
+        challenge: challenge,
+        responses: responses,
+        key_images: key_images
+    })
 }
 
 pub fn vote_to_string(vote: Vote) -> Result<String, serde_json::Error> {
@@ -90,7 +95,7 @@ pub fn str_to_all_voters(json_str: &str) -> Result<Vec<Voter>, serde_json::Error
 pub fn str_to_vote(json_str: &str) -> Result<Vote, serde_json::Error> {
     let json_val: JSONVote = serde_json::from_str(json_str)?;
 
-    let msg = json_val.msg.as_bytes().try_into().unwrap();
+    let msg = json_val.msg.clone();
     let challenge = deserialize(&base64::decode(&json_val.challenge).unwrap_or_default()).unwrap_or_default();
     let responses = deserialize(&base64::decode(&json_val.responses).unwrap_or_default()).unwrap_or_default();
     let key_images = deserialize(&base64::decode(&json_val.key_images).unwrap_or_default()).unwrap_or_default();
