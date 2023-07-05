@@ -20,7 +20,7 @@ curve25519-dalek = { version = "2.1.0", features = ["serde"] }
 sha2 = "0.8"
 merlin = "1.2.0"
 serde-wasm-bindgen = "0.4"
-serde_json = "1.0.59"
+serde-json-wasm = "0.5.1"
 serde_with = "2.3.2"
 bincode = "1.3.3"
 base64 = "0.13.0"

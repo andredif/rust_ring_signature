@@ -447,9 +447,9 @@ dependencies = [
  "rand_chacha",
  "rand_core 0.5.1",
  "serde",
+ "serde-json-wasm",
  "serde-wasm-bindgen",
  "serde_derive",
- "serde_json",
  "serde_with",
  "sha2",
  "wasm-bindgen",
@@ -474,6 +474,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "728eb6351430bccb993660dfffc5a72f91ccc1295abaa8ce19b27ebe4f75568b"
 dependencies = [
  "serde_derive",
+]
+
+[[package]]
+name = "serde-json-wasm"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16a62a1fad1e1828b24acac8f2b468971dade7b8c3c2e672bcadefefb1f8c137"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
