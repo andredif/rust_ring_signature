@@ -42,7 +42,7 @@ impl Signature {
         &self,
         public_keys: &mut Vec<Vec<CompressedRistretto>>,
         original_msg: T,
-    ) -> Result<(), Error> {
+    ) -> Result<String, Error> {
         // Skip subgroup check as ristretto points have co-factor 1.
         let msg: &[u8] = original_msg.as_ref();
         let num_responses = self.responses.len();
@@ -77,7 +77,7 @@ impl Signature {
             return Err(Error::ChallengeMismatch);
         }
 
-        Ok(())
+        Ok("Valid signature".to_string())
     }
 
     pub fn optimised_verify(

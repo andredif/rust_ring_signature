@@ -147,9 +147,9 @@ fn main() {
             };
 
             let start_verifying = Instant::now();
-            let first_res = verify_signature.verify(&mut clsag.public_keys(), msg);
+            let first_res = verify_signature.verify(&mut clsag.public_keys(), msg).unwrap_or_default();
             let duration_verifying = start_verifying.elapsed();
-            println!("Verifying signature took {:?} seconds", duration_verifying);
+            println!("Verifying first signature took {:?} seconds with result {:?}", duration_verifying, first_res);
 
             let start_verifying = Instant::now();
             let second_res = verify_signature.verify(&mut reloaded_clsag.public_keys(), msg);
