@@ -50,6 +50,7 @@ impl Signature {
 
         // -- Check that we have the correct amount of public keys
         if num_pubkey_sets != num_responses {
+            println!("IncorrectNumOfPubKeys");
             return Err(Error::IncorrectNumOfPubKeys);
         }
 
@@ -74,6 +75,7 @@ impl Signature {
         }
 
         if self.challenge != challenge {
+            println!("ChallengeMismatch");
             return Err(Error::ChallengeMismatch);
         }
 
