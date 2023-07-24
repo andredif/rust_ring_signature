@@ -170,24 +170,24 @@ fn main() {
         let msg = reloaded_validation_deserialized.msg;
 
         let start_verifying = Instant::now();
-        let first_res = verify_signature.verify(&mut clsag.public_keys(), &msg);
+        let first_res = verify_signature.verify(&mut clsag.public_keys(), &msg).unwrap();
         let duration_verifying = start_verifying.elapsed();
-        println!("Verifying signature took {:?} seconds", duration_verifying);
+        println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, first_res);
 
         let start_verifying = Instant::now();
-        let second_res = verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg);
+        let second_res = verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg).unwrap();
         let duration_verifying = start_verifying.elapsed();
-        println!("Verifying signature took {:?} seconds", duration_verifying);
+        println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, second_res);
 
         let start_verifying = Instant::now();
-        let third_res = reloaded_verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg);
+        let third_res = reloaded_verify_signature.verify(&mut reloaded_clsag.public_keys(), &msg).unwrap();
         let duration_verifying = start_verifying.elapsed();
-        println!("Verifying signature took {:?} seconds", duration_verifying);
+        println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, third_res);
 
         let start_verifying = Instant::now();
-        let fourth_res = reloaded_verify_signature.verify(&mut clsag.public_keys(), &msg);
+        let fourth_res = reloaded_verify_signature.verify(&mut clsag.public_keys(), &msg).unwrap();
         let duration_verifying = start_verifying.elapsed();
-        println!("Verifying signature took {:?} seconds", duration_verifying);
+        println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, fourth_res);
 
 
     }

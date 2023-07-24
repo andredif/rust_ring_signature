@@ -15,7 +15,7 @@ pub struct Signature {
     pub key_images: Vec<CompressedRistretto>,
 }
 
-
+#[derive(Debug)]
 pub enum Error {
     // This error occurs if the signature contains an amount of public keys
     // that does not match the number of public keys
