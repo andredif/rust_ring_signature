@@ -184,8 +184,14 @@ fn main() {
         let duration_verifying = start_verifying.elapsed();
         println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, third_res);
 
+        let new_array = clsag.public_keys().clone();
+        // Slicing the outer vector to get a slice of references to inner vectors
+        let slice_of_refs = &new_array[1..3];
+
+        // Creating new vectors from the slice of references
+        let mut new_vec = slice_of_refs.iter().cloned().collect();
         let start_verifying = Instant::now();
-        let fourth_res = reloaded_verify_signature.verify(&mut clsag.public_keys(), &msg).unwrap();
+        let fourth_res = reloaded_verify_signature.verify(&mut new_vec, &msg).unwrap_or_default();
         let duration_verifying = start_verifying.elapsed();
         println!("Verifying signature took {:?} seconds with result {:?}", duration_verifying, fourth_res);
 

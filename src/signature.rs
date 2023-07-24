@@ -73,7 +73,8 @@ impl Signature {
                 &pubkey_matrix_bytes,
             );
         }
-
+        println!("Self challenge is: {:?}", self.challenge);
+        println!("Calculated challenge is: {:?}", challenge);
         if self.challenge != challenge {
             println!("ChallengeMismatch");
             return Err(Error::ChallengeMismatch);
