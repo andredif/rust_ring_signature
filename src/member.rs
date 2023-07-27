@@ -5,6 +5,8 @@ use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
+use serde_derive::{Serialize, Deserialize};
+
 use hex::FromHex;
 
 
@@ -20,7 +22,7 @@ pub enum Error {
 
 // A member represents a member in the ring
 // This includes the signer of the ring
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Member {
     // The signer is the only member with a set of private keys
     private_set: Option<PrivateSet>,
