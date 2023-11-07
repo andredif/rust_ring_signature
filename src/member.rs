@@ -5,6 +5,10 @@ use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
+use serde_derive::{Serialize, Deserialize};
+
+use hex::FromHex;
+
 
 #[derive(Debug)]
 pub enum Error {
@@ -18,7 +22,7 @@ pub enum Error {
 
 // A member represents a member in the ring
 // This includes the signer of the ring
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Member {
     // The signer is the only member with a set of private keys
     private_set: Option<PrivateSet>,
@@ -43,6 +47,46 @@ pub fn generate_signer(num_keys: usize) -> Member {
     Member::new_signer(scalars)
 }
 
+fn hex_to_scalar(hex: &str) -> Option<Scalar> {
+    let bytes = match hex::decode(hex) {
+        Ok(bytes) => bytes,
+        Err(_) => return None,
+    };
+    let mut bytes_array: [u8; 32] = [0; 32];
+    bytes_array.copy_from_slice(&bytes[..32]);
+
+    let scalar = Scalar::from_bytes_mod_order(bytes_array);
+    Some(scalar)
+}
+
+use std::error;
+use std::fmt;
+
+#[derive(Debug)]
+pub struct NotValidScalarError;
+
+impl error::Error for NotValidScalarError {}
+
+impl fmt::Display for NotValidScalarError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Failed to convert hexadecimal value to Scalar type")
+    }
+}
+
+pub fn signer_from_private_key(private_key: &str) -> Result<Member, NotValidScalarError>{
+    match hex_to_scalar(private_key) {
+        Some(scalar) => {
+            let mut scalars = Vec::<Scalar>::with_capacity(1);
+            scalars.push(scalar);
+            Ok(Member::new_signer(scalars))
+
+        }
+        None => {
+            // Handle decoding error
+            Err(NotValidScalarError)
+        }
+    }
+}
 
 pub fn generate_rand_scalars(num: usize) -> Vec<Scalar> {
     use rand_core::OsRng;

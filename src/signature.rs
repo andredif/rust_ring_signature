@@ -15,7 +15,7 @@ pub struct Signature {
     pub key_images: Vec<CompressedRistretto>,
 }
 
-
+#[derive(Debug)]
 pub enum Error {
     // This error occurs if the signature contains an amount of public keys
     // that does not match the number of public keys
@@ -42,7 +42,7 @@ impl Signature {
         &self,
         public_keys: &mut Vec<Vec<CompressedRistretto>>,
         original_msg: T,
-    ) -> Result<(), Error> {
+    ) -> Result<String, Error> {
         // Skip subgroup check as ristretto points have co-factor 1.
         let msg: &[u8] = original_msg.as_ref();
         let num_responses = self.responses.len();
@@ -50,18 +50,32 @@ impl Signature {
 
         // -- Check that we have the correct amount of public keys
         if num_pubkey_sets != num_responses {
+            println!("IncorrectNumOfPubKeys");
             return Err(Error::IncorrectNumOfPubKeys);
         }
 
         let pubkey_matrix_bytes: Vec<u8> = self.pubkeys_to_bytes(public_keys);
 
         // Calculate aggregation co-efficients
+        println!("Calculating agg coeffs");
+        println!("Pub keys matrix: {:?}", pubkey_matrix_bytes);
+        println!("msg is: {:?}", msg);
+        println!("Key images are: {:?}", self.key_images);
         let agg_coeffs = calc_aggregation_coefficients(&pubkey_matrix_bytes, &self.key_images, msg);
 
         let mut challenge = self.challenge.clone();
         for (pub_keys, response) in public_keys.iter().zip(self.responses.iter()) {
             let first_pubkey = pub_keys[0];
             let hashed_pubkey = RistrettoPoint::hash_from_bytes::<Sha512>(first_pubkey.as_bytes());
+            // println!("now printing elements to calculate the challenge");
+            // println!("Pub keys are: {:?}", pub_keys);
+            // println!("Challenge is: {:?}", challenge);
+            // println!("Key images are: {:?}", self.key_images);
+            // println!("Response is: {:?}", response);
+            // println!("Agg coeffs are: {:?}", agg_coeffs);
+            // println!("Hashed pubkey is: {:?}", hashed_pubkey);
+            // println!("Pubkey matrix bytes are: {:?}", pubkey_matrix_bytes);
+
             challenge = compute_challenge_ring(
                 pub_keys,
                 &challenge,
@@ -72,12 +86,14 @@ impl Signature {
                 &pubkey_matrix_bytes,
             );
         }
-
+        println!("Self challenge is: {:?}", self.challenge);
+        println!("Calculated challenge is: {:?}", challenge);
         if self.challenge != challenge {
+            println!("ChallengeMismatch");
             return Err(Error::ChallengeMismatch);
         }
 
-        Ok(())
+        Ok("Valid signature".to_string())
     }
 
     pub fn optimised_verify(
