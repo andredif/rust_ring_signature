@@ -11,6 +11,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+getrandom = { version = "0.2", features = ["js"] }
 rand_core = "0.5.1"
 rand_chacha = "0.2"
 serde = "1"

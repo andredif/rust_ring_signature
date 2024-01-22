@@ -6,5 +6,6 @@ pub mod keys;
 pub mod member;
 pub mod signature;
 pub mod tests_helper;
-mod transcript;
 pub mod validation;
+pub mod customRng;
+mod transcript;

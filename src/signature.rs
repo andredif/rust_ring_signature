@@ -50,17 +50,17 @@ impl Signature {
 
         // -- Check that we have the correct amount of public keys
         if num_pubkey_sets != num_responses {
-            println!("IncorrectNumOfPubKeys");
+            // println!("IncorrectNumOfPubKeys");
             return Err(Error::IncorrectNumOfPubKeys);
         }
 
         let pubkey_matrix_bytes: Vec<u8> = self.pubkeys_to_bytes(public_keys);
 
         // Calculate aggregation co-efficients
-        println!("Calculating agg coeffs");
-        println!("Pub keys matrix: {:?}", pubkey_matrix_bytes);
-        println!("msg is: {:?}", msg);
-        println!("Key images are: {:?}", self.key_images);
+        // println!("Calculating agg coeffs");
+        // println!("Pub keys matrix: {:?}", pubkey_matrix_bytes);
+        // println!("msg is: {:?}", msg);
+        // println!("Key images are: {:?}", self.key_images);
         let agg_coeffs = calc_aggregation_coefficients(&pubkey_matrix_bytes, &self.key_images, msg);
 
         let mut challenge = self.challenge.clone();
@@ -86,10 +86,10 @@ impl Signature {
                 &pubkey_matrix_bytes,
             );
         }
-        println!("Self challenge is: {:?}", self.challenge);
-        println!("Calculated challenge is: {:?}", challenge);
+        // println!("Self challenge is: {:?}", self.challenge);
+        // println!("Calculated challenge is: {:?}", challenge);
         if self.challenge != challenge {
-            println!("ChallengeMismatch");
+            // println!("ChallengeMismatch");
             return Err(Error::ChallengeMismatch);
         }
 

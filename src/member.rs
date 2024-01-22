@@ -5,8 +5,8 @@ use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 use curve25519_dalek::scalar::Scalar;
 use curve25519_dalek::traits::VartimeMultiscalarMul;
 use merlin::Transcript;
+use serde_derive::{Serialize, Deserialize};
 use hex::FromHex;
-
 
 #[derive(Debug)]
 pub enum Error {
@@ -20,7 +20,7 @@ pub enum Error {
 
 // A member represents a member in the ring
 // This includes the signer of the ring
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Member {
     // The signer is the only member with a set of private keys
     private_set: Option<PrivateSet>,
@@ -38,11 +38,6 @@ pub struct Member {
     // Each member will have a response value.
     // In an sigma protocol, this would signify the reponse phase.
     pub(crate) response: Option<Scalar>,
-}
-
-pub fn generate_signer(num_keys: usize) -> Member {
-    let scalars = generate_rand_scalars(num_keys);
-    Member::new_signer(scalars)
 }
 
 fn hex_to_scalar(hex: &str) -> Option<Scalar> {
@@ -86,9 +81,10 @@ pub fn signer_from_private_key(private_key: &str) -> Result<Member, NotValidScal
     }
 }
 
+
 pub fn generate_rand_scalars(num: usize) -> Vec<Scalar> {
-    use rand_core::OsRng;
-    let mut csprng: OsRng = OsRng;
+    use crate::customRng::CustomRng;
+    let mut csprng: CustomRng = CustomRng;
     let mut scalars = Vec::<Scalar>::with_capacity(num);
 
     for _ in 0..num {
@@ -96,6 +92,8 @@ pub fn generate_rand_scalars(num: usize) -> Vec<Scalar> {
     }
     scalars
 }
+
+
 
 impl Member {
     // Creates a member who will be the signer of the ring
@@ -334,10 +332,11 @@ pub fn compute_challenge_ring(
 }
 
 fn generate_rand_scalar() -> Scalar {
-    use rand_core::OsRng;
-    let mut csprng: OsRng = OsRng;
+    use crate::customRng::CustomRng;
+    let mut csprng: CustomRng = CustomRng;
     Scalar::random(&mut csprng)
 }
+
 
 // #[cfg(test)]
 // mod test {

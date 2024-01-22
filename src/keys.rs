@@ -2,8 +2,9 @@ use crate::constants::BASEPOINT;
 use curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 use curve25519_dalek::scalar::Scalar;
 use sha2::Sha512;
-
 use std::collections::HashSet;
+use serde_derive::{Serialize, Deserialize};
+
 // Public key set represents a set of public keys
 // note that this is not a `tuple`. A tuple allows duplicates while a set
 // does not. While this is not a limitation placed upon the protocol by the
@@ -11,7 +12,7 @@ use std::collections::HashSet;
 // to proving that you own the same key twice. This restriction will be placed
 // onto the protocol at this level, as the author cannot think of a
 // context where proving you own the same key twice would be useful.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PublicSet(pub Vec<RistrettoPoint>);
 
 impl PublicSet {
@@ -54,7 +55,7 @@ impl PublicSet {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PrivateSet(pub(crate) Vec<Scalar>);
 
 impl PrivateSet {
