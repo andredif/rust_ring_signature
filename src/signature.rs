@@ -67,14 +67,14 @@ impl Signature {
         for (pub_keys, response) in public_keys.iter().zip(self.responses.iter()) {
             let first_pubkey = pub_keys[0];
             let hashed_pubkey = RistrettoPoint::hash_from_bytes::<Sha512>(first_pubkey.as_bytes());
-            // println!("now printing elements to calculate the challenge");
-            // println!("Pub keys are: {:?}", pub_keys);
-            // println!("Challenge is: {:?}", challenge);
-            // println!("Key images are: {:?}", self.key_images);
-            // println!("Response is: {:?}", response);
-            // println!("Agg coeffs are: {:?}", agg_coeffs);
-            // println!("Hashed pubkey is: {:?}", hashed_pubkey);
-            // println!("Pubkey matrix bytes are: {:?}", pubkey_matrix_bytes);
+            println!("now printing elements to calculate the challenge");
+            println!("Pub keys are: {:?}", pub_keys);
+            println!("Challenge is: {:?}", challenge);
+            println!("Key images are: {:?}", self.key_images);
+            println!("Response is: {:?}", response);
+            println!("Agg coeffs are: {:?}", agg_coeffs);
+            println!("Hashed pubkey is: {:?}", hashed_pubkey);
+            println!("Pubkey matrix bytes are: {:?}", pubkey_matrix_bytes);
 
             challenge = compute_challenge_ring(
                 pub_keys,
