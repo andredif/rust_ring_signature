@@ -47,7 +47,8 @@ impl Signature {
         let msg: &[u8] = original_msg.as_ref();
         let num_responses = self.responses.len();
         let num_pubkey_sets = public_keys.len();
-
+        println!("IN THE CLSAG PACKAGE Pub keys are: {:?}", public_keys);
+        println!("IN THE CLSAG PACKAGE Responses are: {:?}", self.responses);
         // -- Check that we have the correct amount of public keys
         if num_pubkey_sets != num_responses {
             println!("IncorrectNumOfPubKeys");
