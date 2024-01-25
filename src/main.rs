@@ -78,17 +78,15 @@ fn main() {
     for (i, signer) in all_signers.iter().enumerate() {
         // Define a clsag object which will be used to create a signature
         let mut clsag = Clsag::new();
-        clsag.add_member(signer.clone());
 
         let mut reloaded_clsag = Clsag::new();
-        reloaded_clsag.add_member(signer.clone());
 
         // Generate and add decoys canonical clsag
         for member in &all_signers {
             let curr_member = member.clone();
-            match curr_member.is_current_signer(signer.hashed_pubkey_basepoint){
+            match curr_member.public_set.to_bytes() == signer.public_set.to_bytes() {
                 true =>{
-                    continue;
+                    clsag.add_member(signer.clone());
                 }
                 false =>{
                     let decoy = Member::new_member_with_responses(curr_member.public_set);
@@ -100,9 +98,9 @@ fn main() {
         // Generate and add decoys reloaded clsag
         for voter in &all_voters_reloaded {
             let curr_voter = Member::new_decoy_from_compressed_ristretto(voter.pub_keys.clone());
-            match curr_voter.is_current_signer(signer.hashed_pubkey_basepoint){
+            match curr_voter.public_set.to_bytes() == signer.public_set.to_bytes() {
                 true =>{
-                    continue;
+                    reloaded_clsag.add_member(signer.clone());
                 }
                 false =>{
                     reloaded_clsag.add_member(curr_voter);
