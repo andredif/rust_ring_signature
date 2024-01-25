@@ -47,35 +47,21 @@ impl Signature {
         let msg: &[u8] = original_msg.as_ref();
         let num_responses = self.responses.len();
         let num_pubkey_sets = public_keys.len();
-        println!("IN THE CLSAG PACKAGE Pub keys are: {:?}", public_keys);
-        println!("IN THE CLSAG PACKAGE Responses are: {:?}", self.responses);
+
         // -- Check that we have the correct amount of public keys
         if num_pubkey_sets != num_responses {
-            println!("IncorrectNumOfPubKeys");
             return Err(Error::IncorrectNumOfPubKeys);
         }
 
         let pubkey_matrix_bytes: Vec<u8> = self.pubkeys_to_bytes(public_keys);
 
         // Calculate aggregation co-efficients
-        println!("Calculating agg coeffs");
-        println!("Pub keys matrix: {:?}", pubkey_matrix_bytes);
-        println!("msg is: {:?}", msg);
-        println!("Key images are: {:?}", self.key_images);
         let agg_coeffs = calc_aggregation_coefficients(&pubkey_matrix_bytes, &self.key_images, msg);
 
         let mut challenge = self.challenge.clone();
         for (pub_keys, response) in public_keys.iter().zip(self.responses.iter()) {
             let first_pubkey = pub_keys[0];
             let hashed_pubkey = RistrettoPoint::hash_from_bytes::<Sha512>(first_pubkey.as_bytes());
-            println!("now printing elements to calculate the challenge");
-            println!("Pub keys are: {:?}", pub_keys);
-            println!("Challenge is: {:?}", challenge);
-            println!("Key images are: {:?}", self.key_images);
-            println!("Response is: {:?}", response);
-            println!("Agg coeffs are: {:?}", agg_coeffs);
-            println!("Hashed pubkey is: {:?}", hashed_pubkey);
-            println!("Pubkey matrix bytes are: {:?}", pubkey_matrix_bytes);
 
             challenge = compute_challenge_ring(
                 pub_keys,
@@ -87,10 +73,7 @@ impl Signature {
                 &pubkey_matrix_bytes,
             );
         }
-        println!("Self challenge is: {:?}", self.challenge);
-        println!("Calculated challenge is: {:?}", challenge);
         if self.challenge != challenge {
-            println!("ChallengeMismatch");
             return Err(Error::ChallengeMismatch);
         }
 
